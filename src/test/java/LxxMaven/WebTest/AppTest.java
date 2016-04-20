@@ -40,7 +40,7 @@ public class AppTest {
 	@Test
 	public void test2() {
 
-		assertTrue("rai" == "rai");
+//		assertTrue("rai" == "rai");
 
 		assertTrue("rai".length() == 2);
 	}
