@@ -21,6 +21,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.events.EventFiringWebDriver;
 
 public class AppTest {
@@ -39,8 +40,6 @@ public class AppTest {
 
 	@Test
 	public void test2() {
-
-//		assertTrue("rai" == "rai");
 
 		assertTrue("rai".length() == 2);
 	}
@@ -79,29 +78,11 @@ public class AppTest {
 		String inputFilePath = ".\\data\\input-self-info_001.json";
 		String jsonString = readFileText(inputFilePath);
 		JSONObject jsonObj = new JSONObject(jsonString);
-
-		// EventFiringWebDriver fDriver = new EventFiringWebDriver(new
-		// ChromeDriver());
-
-		this.fDriver.navigate().to("http://localhost:49459/Selenium/ResumeInput.html");
-
-		String inputWindow = this.fDriver.getWindowHandle();
-
-		this.fDriver.findElement(By.id("txtName")).sendKeys(jsonObj.getString("name"));
-		this.fDriver.findElements(By.name("rdSex")).stream()
-				.filter(e -> e.getAttribute("value").equals(jsonObj.getString("sex"))).findFirst().get().click();
-		if (jsonObj.getBoolean("isMarried")) {
-			this.fDriver.findElement(By.id("lblMarried")).click();
-		}
-		this.fDriver.findElement(By.id("ddlRegion")).findElements(By.xpath("//option")).stream()
-				.filter(e -> e.getText().equals(jsonObj.getString("hometown"))).findFirst().get().click();
-		this.fDriver.findElement(By.id("txtMail")).sendKeys(jsonObj.getString("mailAddress"));
-		this.fDriver.findElement(By.id("txtSelfIntro")).sendKeys(jsonObj.getString("selfIntro"));
-		this.fDriver.findElement(By.id("btnSubmit")).click();
-		this.fDriver.switchTo().alert().accept();
+		
+		PageFactory.initElements(this.fDriver, ResumeInputPage.class).inputInfo(jsonObj);;
 
 		for (String w : this.fDriver.getWindowHandles()) {
-			if (!w.equals(inputWindow)) {
+			if (!w.equals(this.fDriver.getWindowHandle())) {
 				this.fDriver.switchTo().window(w);
 				break;
 			}
