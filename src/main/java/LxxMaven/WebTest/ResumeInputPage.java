@@ -41,16 +41,40 @@ public class ResumeInputPage {
 	}
 
 	public void inputInfo(JSONObject jsonObj) {
-		this.txtName.sendKeys(jsonObj.getString("name"));
-		this.rdSex.stream().filter(e -> e.getAttribute("value").equals(jsonObj.getString("sex"))).findFirst().get()
-				.click();
-		if (jsonObj.getBoolean("isMarried")) {
+
+		String name = jsonObj.getString("name");
+		String sex = jsonObj.getString("sex");
+		boolean isMarried = jsonObj.getBoolean("isMarried");
+		String region = jsonObj.getString("hometown");
+		String mail = jsonObj.getString("mailAddress");
+		String selfIntro = jsonObj.getString("selfIntro");
+		
+		this.inputInfo(name, sex, isMarried, region, mail, selfIntro);
+
+//		this.txtName.sendKeys(jsonObj.getString("name"));
+//		this.rdSex.stream().filter(e -> e.getAttribute("value").equals(jsonObj.getString("sex"))).findFirst().get()
+//				.click();
+//		if (jsonObj.getBoolean("isMarried")) {
+//			this.lblMarried.click();
+//		}
+//		this.ddlRegion.findElements(By.xpath("//option")).stream()
+//				.filter(e -> e.getText().equals(jsonObj.getString("hometown"))).findFirst().get().click();
+//		this.txtMail.sendKeys(jsonObj.getString("mailAddress"));
+//		this.txtSelfIntro.sendKeys(jsonObj.getString("selfIntro"));
+//		this.btnSubmit.click();
+//		this.driver.switchTo().alert().accept();
+	}
+
+	public void inputInfo(String name, String sex, boolean isMarried, String region, String mail, String selfIntro) {
+		this.txtName.sendKeys(name);
+		this.rdSex.stream().filter(e -> e.getAttribute("value").equals(sex)).findFirst().get().click();
+		if (isMarried) {
 			this.lblMarried.click();
 		}
-		this.ddlRegion.findElements(By.xpath("//option")).stream()
-				.filter(e -> e.getText().equals(jsonObj.getString("hometown"))).findFirst().get().click();
-		this.txtMail.sendKeys(jsonObj.getString("mailAddress"));
-		this.txtSelfIntro.sendKeys(jsonObj.getString("selfIntro"));
+		this.ddlRegion.findElements(By.xpath("//option")).stream().filter(e -> e.getText().equals(region)).findFirst()
+				.get().click();
+		this.txtMail.sendKeys(mail);
+		this.txtSelfIntro.sendKeys(selfIntro);
 		this.btnSubmit.click();
 		this.driver.switchTo().alert().accept();
 	}

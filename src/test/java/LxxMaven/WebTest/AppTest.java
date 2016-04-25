@@ -39,12 +39,6 @@ public class AppTest {
 	}
 
 	@Test
-	public void test2() {
-
-		assertTrue("rai".length() == 2);
-	}
-
-	@Test
 	public void testOpenYahoo() {
 
 		this.fDriver.navigate().to("http://www.yahoo.co.jp");
@@ -79,7 +73,7 @@ public class AppTest {
 		String jsonString = readFileText(inputFilePath);
 		JSONObject jsonObj = new JSONObject(jsonString);
 		
-		PageFactory.initElements(this.fDriver, ResumeInputPage.class).inputInfo(jsonObj);;
+		PageFactory.initElements(this.fDriver, ResumeInputPage.class).inputInfo(jsonObj);
 
 		for (String w : this.fDriver.getWindowHandles()) {
 			if (!w.equals(this.fDriver.getWindowHandle())) {
