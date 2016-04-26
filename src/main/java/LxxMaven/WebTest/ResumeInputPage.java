@@ -9,10 +9,9 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.FindBys;
 import org.openqa.selenium.support.How;
+import org.openqa.selenium.support.PageFactory;
 
-public class ResumeInputPage {
-
-	private WebDriver driver;
+public class ResumeInputPage extends SeleniumPageObject {
 
 	@FindBy(how = How.ID, using = "txtName")
 	private WebElement txtName;
@@ -36,8 +35,12 @@ public class ResumeInputPage {
 	private WebElement btnSubmit;
 
 	public ResumeInputPage(WebDriver driver) {
-		this.driver = driver;
-		this.driver.navigate().to("http://localhost:49459/Selenium/ResumeInput.html");
+		super(driver);
+		// this.driver.navigate().to("http://localhost:49459/Selenium/ResumeInput.html");
+	}
+
+	public void open() {
+		super.driver.navigate().to("http://localhost:49459/Selenium/ResumeInput.html");
 	}
 
 	public void inputInfo(JSONObject jsonObj) {
@@ -48,21 +51,8 @@ public class ResumeInputPage {
 		String region = jsonObj.getString("hometown");
 		String mail = jsonObj.getString("mailAddress");
 		String selfIntro = jsonObj.getString("selfIntro");
-		
-		this.inputInfo(name, sex, isMarried, region, mail, selfIntro);
 
-//		this.txtName.sendKeys(jsonObj.getString("name"));
-//		this.rdSex.stream().filter(e -> e.getAttribute("value").equals(jsonObj.getString("sex"))).findFirst().get()
-//				.click();
-//		if (jsonObj.getBoolean("isMarried")) {
-//			this.lblMarried.click();
-//		}
-//		this.ddlRegion.findElements(By.xpath("//option")).stream()
-//				.filter(e -> e.getText().equals(jsonObj.getString("hometown"))).findFirst().get().click();
-//		this.txtMail.sendKeys(jsonObj.getString("mailAddress"));
-//		this.txtSelfIntro.sendKeys(jsonObj.getString("selfIntro"));
-//		this.btnSubmit.click();
-//		this.driver.switchTo().alert().accept();
+		this.inputInfo(name, sex, isMarried, region, mail, selfIntro);
 	}
 
 	public void inputInfo(String name, String sex, boolean isMarried, String region, String mail, String selfIntro) {
@@ -75,7 +65,17 @@ public class ResumeInputPage {
 				.get().click();
 		this.txtMail.sendKeys(mail);
 		this.txtSelfIntro.sendKeys(selfIntro);
+	}
+
+	public ResumeDisplayPage regist() {
 		this.btnSubmit.click();
 		this.driver.switchTo().alert().accept();
+		for (String w : this.driver.getWindowHandles()) {
+			if (!w.equals(this.driver.getWindowHandle())) {
+				this.driver.switchTo().window(w);
+				return PageFactory.initElements(this.driver, ResumeDisplayPage.class);
+			}
+		}
+		return null;
 	}
 }

@@ -11,30 +11,37 @@ import java.util.Calendar;
 import javax.swing.filechooser.FileSystemView;
 
 import org.apache.commons.io.FileUtils;
-import org.openqa.selenium.OutputType;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.PageFactory;
-import org.openqa.selenium.support.events.EventFiringWebDriver;
+import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.DataProvider;
 
 public class NewTest {
-	
-	private EventFiringWebDriver fDriver = null;
-	
+
+	private WebDriver driver = null;
+
 	@Test(dataProvider = "dp")
 	public void inputResume(String name, String sex, boolean isMarried, String region, String mail, String selfIntro) {
-		PageFactory.initElements(this.fDriver, ResumeInputPage.class).inputInfo(name, sex, isMarried, region, mail, selfIntro);
 
-		for (String w : this.fDriver.getWindowHandles()) {
-			if (!w.equals(this.fDriver.getWindowHandle())) {
-				this.fDriver.switchTo().window(w);
-				break;
-			}
-		}
+		ResumeInputPage pageResumeInput = PageFactory.initElements(this.driver, ResumeInputPage.class);
+		pageResumeInput.open();
+		pageResumeInput.inputInfo(name, sex, isMarried, region, mail, selfIntro);
+		ResumeDisplayPage pageResumeDisplay = pageResumeInput.regist();
+
+		Assert.assertNotEquals(pageResumeDisplay, null);
+		
+		Object[] resumeInfo = pageResumeDisplay.getResumeInfo();
+		Assert.assertEquals(name, resumeInfo[0]);
+		Assert.assertEquals(sex, resumeInfo[1]);
+		Assert.assertEquals(isMarried, resumeInfo[2]);
+		Assert.assertEquals(region, resumeInfo[3]);
+		Assert.assertEquals(mail, resumeInfo[4]);
+		Assert.assertEquals(selfIntro, resumeInfo[5]);
 
 		String path = FileSystemView.getFileSystemView().getHomeDirectory().getAbsolutePath();
-		File scrFile = this.fDriver.getScreenshotAs(OutputType.FILE);
+		File scrFile = pageResumeDisplay.getScreenshotAsFile();
 		try {
 			FileUtils.copyFile(scrFile,
 					new File(path + "\\WebTest\\java_screenshot_"
@@ -50,13 +57,12 @@ public class NewTest {
 	@BeforeMethod
 	public void beforeMethod() {
 		System.setProperty("webdriver.chrome.driver", ".\\res\\chromedriver.exe");
-
-		this.fDriver = new EventFiringWebDriver(new ChromeDriver());
+		this.driver = new ChromeDriver();
 	}
 
 	@AfterMethod
 	public void afterMethod() {
-		this.fDriver.quit();
+		this.driver.quit();
 	}
 
 	@DataProvider
