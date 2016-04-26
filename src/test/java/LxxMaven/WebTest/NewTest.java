@@ -3,14 +3,18 @@ package LxxMaven.WebTest;
 import org.testng.annotations.Test;
 import org.testng.annotations.BeforeMethod;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 import javax.swing.filechooser.FileSystemView;
 
 import org.apache.commons.io.FileUtils;
+import org.json.JSONObject;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.PageFactory;
@@ -31,7 +35,7 @@ public class NewTest {
 		ResumeDisplayPage pageResumeDisplay = pageResumeInput.regist();
 
 		Assert.assertNotEquals(pageResumeDisplay, null);
-		
+
 		Object[] resumeInfo = pageResumeDisplay.getResumeInfo();
 		Assert.assertEquals(name, resumeInfo[0]);
 		Assert.assertEquals(sex, resumeInfo[1]);
@@ -67,11 +71,37 @@ public class NewTest {
 
 	@DataProvider
 	public Object[][] dp() {
-		return new Object[][] {
-				{ "馬雲", "male", true, "広州", "jackma@ali.com",
-						"小さい頃から英語を学ぼうと、朝早くから自転車で近くのホテルに行って外国人と話していた。9年間このような生活が続いた後、互いに文通をしあう外国人の友達と出会い、彼女からJackと呼ばれるようになる" },
-				{ "メグ・ホイットマン", "female", true, "東京", "ceo@hp.com",
-						"1998年3月、従業員数30人程度の規模だったeBayの社長兼最高経営責任者に就任。退任する2008年3月までに世界的なインターネットオークション会社に成長させた。2011年9月22日、米国ヒューレット・パッカード前任CEOの退任に伴い、CEOに就任した。" },
-				{ "しょうで", "male", false, "上海", "mangliuxiaodan@lyl.net", "ユデりゃんクェパンニョ" }, };
+
+		File dataFolder = new File(".\\data");
+		File[] inputFiles = dataFolder.listFiles();
+		Object[][] datas = new Object[inputFiles.length][];
+
+		for (int i = 0; i < inputFiles.length; i++) {
+			String jsonString = readFileText(inputFiles[i].getPath());
+			JSONObject jsonObj = new JSONObject(jsonString);
+			datas[i] = new Object[] { jsonObj.getString("name"), jsonObj.getString("sex"),
+					jsonObj.getBoolean("isMarried"), jsonObj.getString("hometown"), jsonObj.getString("mailAddress"),
+					jsonObj.getString("selfIntro"), };
+		}
+
+		return datas;
+	}
+
+	private static String readFileText(String path) {
+		String text = null;
+		try (BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(path), "UTF-8"))) {
+
+			StringBuffer buffer = new StringBuffer();
+			String line = "";
+			while ((line = in.readLine()) != null) {
+				buffer.append(line);
+			}
+
+			text = buffer.toString().trim();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return text.substring(text.indexOf('{'));
 	}
 }
