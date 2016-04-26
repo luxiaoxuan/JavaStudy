@@ -26,7 +26,7 @@ public class NewTest {
 
 	private WebDriver driver = null;
 
-	@Test(dataProvider = "dp")
+	@Test(dataProvider = "dp", groups = { "Success", "Selenium", })
 	public void inputResume(String name, String sex, boolean isMarried, String region, String mail, String selfIntro) {
 
 		ResumeInputPage pageResumeInput = PageFactory.initElements(this.driver, ResumeInputPage.class);
