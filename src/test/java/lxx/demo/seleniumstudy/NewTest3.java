@@ -1,4 +1,4 @@
-package LxxMaven.WebTest;
+package lxx.demo.seleniumstudy;
 
 import org.testng.annotations.Test;
 

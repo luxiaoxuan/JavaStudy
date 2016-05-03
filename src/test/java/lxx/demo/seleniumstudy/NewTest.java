@@ -1,6 +1,10 @@
-package LxxMaven.WebTest;
+package lxx.demo.seleniumstudy;
 
 import org.testng.annotations.Test;
+
+import lxx.demo.seleniumstudy.ResumeDisplayPage;
+import lxx.demo.seleniumstudy.ResumeInputPage;
+
 import org.testng.annotations.BeforeMethod;
 
 import java.io.BufferedReader;
